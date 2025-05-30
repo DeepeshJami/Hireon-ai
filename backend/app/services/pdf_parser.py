@@ -42,7 +42,7 @@ def parse_pdf_to_text(pdf_file: UploadFile) -> str:
         try:
             text = pdf_file.file.read().decode('utf-8')
             return text.strip()
-    except Exception as e:
+        except Exception as e:
             raise HTTPException(
                 status_code=500,
                 detail=f"Error processing text file: {str(e)}"

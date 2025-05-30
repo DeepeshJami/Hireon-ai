@@ -4,7 +4,6 @@ import MatchScoreDisplay from './MatchScoreDisplay';
 import MissingKeywordsList from './MissingKeywordsList';
 import SuggestionsList from './SuggestionsList';
 import ResumeStatsDisplay from './ResumeStatsDisplay';
-import { motion } from 'framer-motion';
 import { AlertTriangle } from 'lucide-react';
 
 const AnalysisResult = () => {
@@ -17,9 +16,7 @@ const AnalysisResult = () => {
 
   if (error) {
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
+      <div
         className="my-8 p-6 bg-red-500/10 border border-red-500/30 rounded-lg shadow-md"
       >
         <div className="flex items-center gap-3 mb-2">
@@ -31,7 +28,7 @@ const AnalysisResult = () => {
         <p className="text-red-600 dark:text-red-300 font-inter">
           {typeof error === 'string' ? error : error.message || 'An unexpected error occurred.'}
         </p>
-      </motion.div>
+      </div>
     );
   }
 
@@ -52,24 +49,21 @@ const AnalysisResult = () => {
     match_rating = '',
     missing_keywords = [],
     suggestions = [],
-    resume_stats = { word_count: 0, readability_score: 0.0 },
   } = analysisResult;
 
   return (
-    <motion.div 
+    <div
       className="my-8 space-y-6"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
       data-testid="analysis-result"
     >
-      <div className="grid md:grid-cols-2 gap-6">
-        <MatchScoreDisplay score={match_score} rating={match_rating} />
-        <ResumeStatsDisplay stats={resume_stats} />
+      <div className="flex justify-center">
+        <div className="w-full max-w-md">
+          <MatchScoreDisplay score={match_score} rating={match_rating} />
+        </div>
       </div>
       <MissingKeywordsList keywords={missing_keywords} />
       <SuggestionsList suggestions={suggestions} />
-    </motion.div>
+    </div>
   );
 };
 
