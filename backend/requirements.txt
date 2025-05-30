@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+pdfplumber
+openai
+textstat
+pytest
+pytest-asyncio
+httpx
+python-multipart 
