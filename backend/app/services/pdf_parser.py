@@ -2,50 +2,55 @@ import pdfplumber
 from fastapi import UploadFile, HTTPException
 import io
 import logging # Import logging
+from io import BytesIO
 
 logger = logging.getLogger(__name__) # Get a logger for this module
 
-def parse_pdf_to_text(file: UploadFile) -> str:
+def parse_pdf_to_text(pdf_file: UploadFile) -> str:
     """
-    Parses an uploaded PDF file and extracts text content.
-
+    Parse PDF or plain text file to text using pdfplumber or direct read.
+    
     Args:
-        file: The UploadFile object from FastAPI.
-
-    Returns:
-        A string containing the extracted text from the PDF.
-
-    Raises:
-        HTTPException: If the file is not a PDF, is password-protected,
-                       or if any other parsing error occurs.
-    """
-    logger.info(f"Attempting to parse PDF: {file.filename}")
-    if not file.filename.lower().endswith(".pdf"):
-        logger.warning(f"Invalid file type uploaded: {file.filename}. Not a PDF.")
-        raise HTTPException(status_code=400, detail="Invalid file type. Only PDF files are accepted.")
-
-    try:
-        # Read the file content into a BytesIO object
-        file_content = io.BytesIO(file.file.read())
+        pdf_file (UploadFile): The uploaded file (PDF or TXT)
         
-        with pdfplumber.open(file_content) as pdf:
-            text_content = []
-            for page in pdf.pages:
-                try:
+    Returns:
+        str: Extracted text from the file
+        
+    Raises:
+        HTTPException: If file is not a PDF or TXT or cannot be processed
+    """
+    filename = pdf_file.filename.lower()
+    if filename.endswith('.pdf'):
+        try:
+            pdf_content = pdf_file.file.read()
+            pdf_stream = BytesIO(pdf_content)
+            with pdfplumber.open(pdf_stream) as pdf:
+                text = ""
+                for page in pdf.pages:
                     page_text = page.extract_text()
                     if page_text:
-                        text_content.append(page_text)
-                except Exception as page_error:
-                    logger.warning(f"Error extracting text from page in {file.filename}: {page_error}")
-                    continue  # Skip problematic pages but continue processing
-            
-            if not text_content:
-                logger.warning(f"No text content found in PDF: {file.filename}")
-                raise HTTPException(status_code=400, detail="Failed to parse PDF: No text content found in the PDF.")
-
-            logger.info(f"Successfully parsed PDF: {file.filename}, extracted {len(text_content)} pages of text.")
-            return "\n".join(text_content)
-
-    except Exception as e:
-        logger.error(f"Failed to parse PDF {file.filename} due to an unexpected error: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to parse PDF: An unexpected error occurred. {str(e)}") 
+                        text += page_text + "\n"
+                return text.strip()
+        except Exception as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Error processing PDF file: {str(e)}"
+            )
+        finally:
+            pdf_file.file.seek(0)
+    elif filename.endswith('.txt') or pdf_file.content_type == 'text/plain':
+        try:
+            text = pdf_file.file.read().decode('utf-8')
+            return text.strip()
+        except Exception as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Error processing text file: {str(e)}"
+            )
+        finally:
+            pdf_file.file.seek(0)
+    else:
+        raise HTTPException(
+            status_code=400,
+            detail="Only PDF or plain text files are supported. Please upload a PDF or paste your resume text."
+        ) 

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
 import { Upload, FileText, Briefcase, Zap } from 'lucide-react';
@@ -36,6 +36,12 @@ const UploadPage = () => {
   const [resumeError, setResumeError] = useState(null);
   const [jobDescriptionError, setJobDescriptionError] = useState(null);
   const [fileTypeError, setFileTypeError] = useState(null);
+  // Add state for input method
+  const [resumeInputMethod, setResumeInputMethod] = useState('upload'); // 'upload' or 'text'
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [infoMessage, setInfoMessage] = useState('');
+  const [conflict, setConflict] = useState(false);
+  const textAreaRef = useRef(null);
 
   const handleSubmit = async () => {
     setError(null); // Clear previous errors
@@ -45,8 +51,9 @@ const UploadPage = () => {
     setFileTypeError(null);
 
     let hasError = false;
-    if (!resumeFile) {
-      setResumeError('Please upload a PDF resume');
+    // Allow either a file OR text
+    if (!resumeFile && resume.trim() === '') {
+      setResumeError('Please upload a PDF resume or paste your resume text.');
       hasError = true;
     }
     if (!jobDescription.trim()) {
@@ -57,9 +64,13 @@ const UploadPage = () => {
 
     setIsLoading(true);
     try {
-      const result = await analyzeResumeWithAPI(resumeFile, jobDescription);
+      let fileToSend = resumeFile;
+      if (!resumeFile) {
+        // Create a text file from the textarea content
+        fileToSend = new File([resume], "resume.txt", { type: "text/plain" });
+      }
+      const result = await analyzeResumeWithAPI(fileToSend, jobDescription);
       setAnalysisResult(result);
-      alert("Analysis Complete! Check console for results (placeholder)."); 
     } catch (apiError) {
       console.error("API Error in handleSubmit:", apiError);
       setError(apiError.response?.data?.detail || apiError.message || 'Failed to analyze. Please try again.');
@@ -91,10 +102,10 @@ const UploadPage = () => {
       // Only allow PDF files for upload
       if (file.type !== 'application/pdf') {
         setFileTypeError('Please upload a PDF file');
-        setResume('');
+        // Do not clear the resume textarea
         return;
       }
-      setResume(`PDF file selected: ${file.name} (Content will be processed by AI)`);
+      // Do NOT setResume here! Let the user type or paste if they want.
       console.log("Selected file:", file.name);
     }
   };
@@ -112,10 +123,10 @@ const UploadPage = () => {
       setResumeError(null);
       if (file.type !== 'application/pdf') {
         setFileTypeError('Please upload a PDF file');
-        setResume('');
+        // Do not clear the resume textarea
         return;
       }
-      setResume(`PDF file dropped: ${file.name} (Content will be processed by AI)`);
+      // Do NOT setResume here! Let the user type or paste if they want.
       console.log("Dropped file:", file.name);
     }
   }, [setResume, setResumeFile, setError]);
@@ -129,6 +140,61 @@ const UploadPage = () => {
   const handleDragLeave = useCallback(() => {
     setIsDragOver(false);
   }, []);
+
+  // When switching input method, clear previous input
+  const handleInputMethodChange = (method) => {
+    setResumeInputMethod(method);
+    setResumeFile(null);
+    setFileName(null);
+    setResume('');
+    setResumeError(null);
+    setFileTypeError(null);
+    setInfoMessage('');
+    setShowTooltip(false);
+    setConflict(false);
+  };
+
+  // Auto-switch to PDF mode if PDF is dragged over text area
+  const handleTextAreaDragOver = (event) => {
+    if (resumeInputMethod === 'text' && event.dataTransfer.types.includes('Files')) {
+      const file = event.dataTransfer.items[0];
+      if (file && file.kind === 'file' && file.type === 'application/pdf') {
+        setShowTooltip(true);
+        setTimeout(() => setShowTooltip(false), 2000);
+      }
+    }
+  };
+  const handleTextAreaDrop = (event) => {
+    if (resumeInputMethod === 'text' && event.dataTransfer.files.length > 0) {
+      const file = event.dataTransfer.files[0];
+      if (file.type === 'application/pdf') {
+        setResumeInputMethod('upload');
+        setShowTooltip(false);
+        setTimeout(() => {
+          setFileName(file.name);
+          setResumeFile(file);
+        }, 100);
+      }
+    }
+  };
+
+  // Info message if user tries to type into disabled textarea
+  const handleTextAreaFocus = () => {
+    if (resumeInputMethod !== 'text') {
+      setInfoMessage('Please use only one method to provide your content.');
+      setTimeout(() => setInfoMessage(''), 2000);
+      if (textAreaRef.current) textAreaRef.current.blur();
+    }
+  };
+
+  // Conflict detection (should never happen, but for dev tools)
+  useEffect(() => {
+    if (resumeFile && resume.trim()) {
+      setConflict(true);
+    } else {
+      setConflict(false);
+    }
+  }, [resumeFile, resume]);
 
   return (
     // Main container for the page content
@@ -167,46 +233,122 @@ const UploadPage = () => {
                 Your Resume
               </h3>
             </div>
-            <div className="relative">
-              <textarea
-                value={resume}
-                onChange={(e) => setResume(e.target.value)}
-                placeholder="Paste your resume content here..."
-                className="w-full h-64 md:h-80 p-4 rounded-lg border-2 border-input focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all duration-300 resize-none bg-background text-foreground placeholder:text-muted-foreground font-inter"
-              />
-              {resumeError && (
-                <div className="text-red-600 text-sm mt-1" data-testid="resume-error">{resumeError}</div>
-              )}
-              {fileTypeError && (
-                <div className="text-red-600 text-sm mt-1" data-testid="file-type-error">{fileTypeError}</div>
-              )}
+            {/* Segmented control */}
+            <div className="flex justify-center mb-4">
+              <div className="inline-flex rounded-full bg-muted p-1 shadow-inner" role="tablist" aria-label="Resume input method">
+                <button
+                  type="button"
+                  className={`px-5 py-2 rounded-full font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 ${resumeInputMethod === 'upload' ? 'bg-background text-primary shadow' : 'text-muted-foreground'}`}
+                  aria-selected={resumeInputMethod === 'upload'}
+                  aria-controls="upload-panel"
+                  onClick={() => handleInputMethodChange('upload')}
+                >
+                  Upload PDF
+                </button>
+                <button
+                  type="button"
+                  className={`px-5 py-2 rounded-full font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 ${resumeInputMethod === 'text' ? 'bg-background text-primary shadow' : 'text-muted-foreground'}`}
+                  aria-selected={resumeInputMethod === 'text'}
+                  aria-controls="text-panel"
+                  onClick={() => handleInputMethodChange('text')}
+                >
+                  Paste Text
+                </button>
+              </div>
             </div>
-            <motion.div
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              onClick={() => document.getElementById('resumeFileInput').click()} 
-              whileHover={{ scale: 1.02 }}
-              className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-all duration-300 cursor-pointer ${
-                isDragOver 
-                  ? 'border-primary bg-primary/10' 
-                  : 'border-input hover:border-primary/70'
-              }`}
-              data-testid="drop-zone"
-            >
-              <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-              <p className="text-sm text-muted-foreground font-inter">
-                Or drag & drop your PDF resume here
-              </p>
-              {fileName && <p className="text-xs text-primary mt-1">Selected: {fileName}</p>}
-              <input
-                id="resumeFileInput" 
-                type="file"
-                accept=".pdf,.txt,.docx" 
-                onChange={handleFileChange}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-              />
-            </motion.div>
+            {/* Conflict message */}
+            {conflict && (
+              <div className="mb-2 p-2 rounded bg-red-100 text-red-700 text-center font-medium">
+                Please use only one method to provide your content — either paste text or upload a PDF.
+              </div>
+            )}
+            {/* Show only the selected input method */}
+            {resumeInputMethod === 'upload' && !conflict && (
+              <div id="upload-panel" role="tabpanel" aria-labelledby="upload-tab">
+                <div className="mb-2 text-sm text-muted-foreground">Upload your resume as a PDF file.</div>
+                <motion.div
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  onClick={() => document.getElementById('resumeFileInput').click()}
+                  whileHover={{ scale: 1.02 }}
+                  className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-all duration-300 cursor-pointer ${
+                    isDragOver 
+                      ? 'border-primary bg-primary/10' 
+                      : 'border-input hover:border-primary/70'
+                  }`}
+                  data-testid="drop-zone"
+                >
+                  <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-sm text-muted-foreground font-inter">
+                    Drag & drop your PDF resume here or click to browse
+                  </p>
+                  {fileName && <p className="text-xs text-primary mt-1">Selected: {fileName}</p>}
+                  <input
+                    id="resumeFileInput" 
+                    type="file"
+                    accept=".pdf" 
+                    onChange={handleFileChange}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                  {resumeFile && (
+                    <button
+                      type="button"
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded px-2 py-1 text-xs z-10"
+                      onClick={() => { setResumeFile(null); setFileName(null); }}
+                    >
+                      Remove PDF
+                    </button>
+                  )}
+                </motion.div>
+                {resumeError && (
+                  <div className="text-red-600 text-sm mt-1" data-testid="resume-error">{resumeError}</div>
+                )}
+                {fileTypeError && (
+                  <div className="text-red-600 text-sm mt-1" data-testid="file-type-error">{fileTypeError}</div>
+                )}
+                {infoMessage && (
+                  <div className="mt-2 text-xs text-blue-600 text-center">{infoMessage}</div>
+                )}
+              </div>
+            )}
+            {resumeInputMethod === 'text' && !conflict && (
+              <div id="text-panel" role="tabpanel" aria-labelledby="text-tab">
+                <div className="mb-2 text-sm text-muted-foreground">Paste your resume content below.</div>
+                <div className="relative">
+                  <textarea
+                    ref={textAreaRef}
+                    value={resume}
+                    onChange={(e) => setResume(e.target.value)}
+                    placeholder="Paste your resume content here..."
+                    className="w-full h-64 md:h-80 p-4 rounded-lg border-2 border-input focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all duration-300 resize-none bg-background text-foreground placeholder:text-muted-foreground font-inter"
+                    onDragOver={handleTextAreaDragOver}
+                    onDrop={handleTextAreaDrop}
+                    onFocus={handleTextAreaFocus}
+                  />
+                  {showTooltip && (
+                    <div className="absolute top-2 right-2 bg-black text-white rounded px-2 py-1 text-xs z-10 shadow-lg animate-fade-in">
+                      Switching to PDF upload mode…
+                    </div>
+                  )}
+                </div>
+                {resume && (
+                  <button
+                    type="button"
+                    className="mt-2 bg-red-500 text-white rounded px-2 py-1 text-xs z-10"
+                    onClick={() => setResume('')}
+                  >
+                    Clear Text
+                  </button>
+                )}
+                {resumeError && (
+                  <div className="text-red-600 text-sm mt-1" data-testid="resume-error">{resumeError}</div>
+                )}
+                {infoMessage && (
+                  <div className="mt-2 text-xs text-blue-600 text-center">{infoMessage}</div>
+                )}
+              </div>
+            )}
           </motion.div>
 
           {/* Job Description Input Section */}
