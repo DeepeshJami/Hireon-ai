@@ -12,7 +12,7 @@ const MainLayout = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <header className="bg-card border-b border-border shadow-sm p-4 sticky top-0 z-50">
-        <div className="container mx-auto flex items-center justify-between">
+        <div className="w-full flex items-center justify-between">
           <div className="flex items-center gap-2">
             <HireonLogo style={{ fontSize: '1rem' }} />
           </div>
@@ -32,7 +32,7 @@ const MainLayout = () => {
         </div>
       </header>
 
-      <main className="flex-grow container">
+      <main className="flex-grow w-full">
         <Outlet />
       </main>
 
