@@ -1,0 +1,20 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.3.5, pluggy-1.6.0
+rootdir: /home/deepesh/Desktop/Hireon/backend
+configfile: pytest.ini
+plugins: asyncio-1.0.0, anyio-4.9.0
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 3 items
+
+tests/services/test_openai_pipeline.py ...                               [100%]
+
+=============================== warnings summary ===============================
+venv/lib/python3.12/site-packages/pydantic/fields.py:1064
+venv/lib/python3.12/site-packages/pydantic/fields.py:1064
+venv/lib/python3.12/site-packages/pydantic/fields.py:1064
+venv/lib/python3.12/site-packages/pydantic/fields.py:1064
+  /home/deepesh/Desktop/Hireon/backend/venv/lib/python3.12/site-packages/pydantic/fields.py:1064: PydanticDeprecatedSince20: `max_items` is deprecated and will be removed, use `max_length` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    warn('`max_items` is deprecated and will be removed, use `max_length` instead', DeprecationWarning)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 3 passed, 4 warnings in 6.78s =========================
