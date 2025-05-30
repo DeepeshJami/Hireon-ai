@@ -9,13 +9,13 @@ logger = logging.getLogger(__name__) # Get a logger for this module
 def parse_pdf_to_text(pdf_file: UploadFile) -> str:
     """
     Parse PDF or plain text file to text using pdfplumber or direct read.
-    
+
     Args:
         pdf_file (UploadFile): The uploaded file (PDF or TXT)
-        
+
     Returns:
         str: Extracted text from the file
-        
+
     Raises:
         HTTPException: If file is not a PDF or TXT or cannot be processed
     """
@@ -26,9 +26,9 @@ def parse_pdf_to_text(pdf_file: UploadFile) -> str:
             pdf_stream = BytesIO(pdf_content)
             with pdfplumber.open(pdf_stream) as pdf:
                 text = ""
-                for page in pdf.pages:
-                    page_text = page.extract_text()
-                    if page_text:
+            for page in pdf.pages:
+                page_text = page.extract_text()
+                if page_text:
                         text += page_text + "\n"
                 return text.strip()
         except Exception as e:
@@ -42,7 +42,7 @@ def parse_pdf_to_text(pdf_file: UploadFile) -> str:
         try:
             text = pdf_file.file.read().decode('utf-8')
             return text.strip()
-        except Exception as e:
+    except Exception as e:
             raise HTTPException(
                 status_code=500,
                 detail=f"Error processing text file: {str(e)}"

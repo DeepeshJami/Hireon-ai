@@ -243,6 +243,151 @@ This document outlines the phased, modular, step-by-step implementation plan for
     3.  Test recovery procedures.
     4.  Document recovery process.
 
+## Phase 7: Governance & Scale (Parallel Track)
+
+**Goal:** Ensure the product is safe, compliant, fair, and sustainable at scale, meeting regulatory, enterprise, and operational requirements.
+
+| Gap                                          | Why it matters                                                                                                                                                                                                                      | Concrete action items                                                                                                                                                                 |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Regulatory compliance & AI governance**    | EU AI Act categorises hiring tools as *high-risk* systems; in the U.S. the EEOC treats résumé screeners as "selection procedures." Non-compliance exposes you to fines and litigation. ([European Parliament][1], [Mayer Brown][2]) | • Map features to EU AI Act Article 9/10 controls (data-set quality, transparency statements, human oversight).  <br>• Produce annual disparate-impact & bias reports for EEOC/OFCCP. |
+| **Bias mitigation & model audit loop**       | Fairness can drift after deployment; regulators expect ongoing testing, not a one-time check.                                                                                                                                       | • Add a quarterly bias-audit pipeline (stratified sampling + statistical significance tests).  <br>• Maintain a panel of synthetic "benchmark résumés" for regression testing.        |
+| **Security hardening**                       | You handle file uploads containing PII; that's an attractive target.                                                                                                                                                                | • File-type whitelisting + antivirus scan + content-type validation before parsing. <br>• OWASP top-10 penetration tests each release.                                                |
+| **Privacy ops**                              | Privacy-first principle deserves operational proof.                                                                                                                                                                                 | • Automated data-at-rest deletion (e.g., tmpfs / RAM-disk) with audit logs.  <br>• Add a "Right to delete" endpoint/API even if data is ephemeral.                                  |
+| **Accessibility & localisation**             | Enterprise buyers often require WCAG 2.1 AA and multi-language support.                                                                                                                                                             | • Accessibility test suite (axe/Pa11y).  <br>• I18n scaffolding; language-agnostic resume parsing (consider spaCy language pipelines).                                                |
+| **Observability → Model-quality monitoring** | You log system metrics, but not *why* the AI output changes.                                                                                                                                                                        | • Capture input/output embeddings & key stats (hashed to protect data) for drift detection.                                                                                           |
+| **Cost & capacity planning**                 | GPT tokens are a variable COGS driver; uptake spikes after launch.                                                                                                                                                                  | • Add real-time token telemetry + cost dashboards.  <br>• Introduce caching layer for repeated analyses of identical résumés.                                                         |
+| **Multi-format ingestion**                   | Users will upload DOCX, ODT, or image-based PDFs.                                                                                                                                                                                   | • Extend parsing layer to python-docx / Tika + fallback OCR (Tesseract) for images.                                                                                                   |
+| **User support & feedback loop**             | Needed for continuous improvement and enterprise SLAs.                                                                                                                                                                              | • In-app "Report an issue / suggest improvement" channel wired to ticket system. <br>• SLA metrics (first response, resolution time) in monitoring stack.                             |
+
+### How to integrate
+
+* **Embed** a short **Phase 7: Governance & Scale** (or treat each item as a swim-lane in Phases 5-6) with acceptance criteria and owners.
+* **Add checklists** to your Definition of Done—e.g., "Bias test run passes" must be green before merge.
+* **Publish** a living **Trust Center** page summarising compliance artefacts, security posture, and audit cadence—buyers now expect it by default.
+
+[1]: https://www.europarl.europa.eu/topics/en/article/20230601STO93804/eu-ai-act-first-regulation-on-artificial-intelligence?utm_source=chatgpt.com "EU AI Act: first regulation on artificial intelligence | Topics"
+[2]: https://www.mayerbrown.com/en/insights/publications/2023/07/eeoc-issues-title-vii-guidance-on-employer-use-of-ai-other-algorithmic-decisionmaking-tools?utm_source=chatgpt.com "EEOC Issues Title VII Guidance on Employer Use of AI, Other ..."
+
+### Modular Implementation Plan for Phase 7: Governance & Scale
+
+**Goal:** Ensure the product is safe, compliant, fair, and sustainable at scale, meeting regulatory, enterprise, and operational requirements.
+
+#### Module 7.1: Regulatory Compliance & AI Governance
+* **Goal:** Achieve and document compliance with EU AI Act, EEOC, and other relevant regulations.
+* **Implementation Steps:**
+    1. Map all features to EU AI Act Article 9/10 controls (data-set quality, transparency, human oversight).
+    2. Draft and publish transparency statements and human oversight documentation.
+    3. Produce annual disparate-impact and bias reports for EEOC/OFCCP.
+    4. Add compliance checklists to CI/CD and Definition of Done.
+
+#### Module 7.2: Bias Mitigation & Model Audit Loop
+* **Goal:** Ensure ongoing fairness and mitigate bias in AI outputs.
+* **Implementation Steps:**
+    1. Implement a quarterly bias-audit pipeline (stratified sampling, statistical significance tests).
+    2. Maintain a panel of synthetic "benchmark résumés" for regression testing.
+    3. Automate bias test runs in CI/CD; require passing status before merge.
+    4. Document audit results and remediation steps.
+
+#### Module 7.3: Security Hardening
+* **Goal:** Protect user data and prevent security breaches.
+* **Implementation Steps:**
+    1. Enforce file-type whitelisting, antivirus scanning, and content-type validation before parsing uploads.
+    2. Conduct OWASP Top 10 penetration tests for each release.
+    3. Integrate security scanning tools (Dependabot, Trivy) into CI/CD.
+    4. Document security posture and incident response plan.
+
+#### Module 7.4: Privacy Operations
+* **Goal:** Operationalize privacy-first principles and user rights.
+* **Implementation Steps:**
+    1. Automate data-at-rest deletion (e.g., tmpfs/RAM-disk) with audit logs.
+    2. Implement a "Right to delete" endpoint/API, even for ephemeral data.
+    3. Regularly review and update privacy policy and user-facing documentation.
+    4. Add privacy compliance checks to release process.
+
+#### Module 7.5: Accessibility & Localisation
+* **Goal:** Meet WCAG 2.1 AA accessibility and support multiple languages.
+* **Implementation Steps:**
+    1. Integrate accessibility test suite (axe, Pa11y) into CI/CD.
+    2. Scaffold i18n (react-intl) and support language-agnostic resume parsing (spaCy pipelines).
+    3. Conduct regular accessibility audits and remediation.
+    4. Document accessibility and localisation support.
+
+#### Module 7.6: Observability & Model-Quality Monitoring
+* **Goal:** Monitor model quality and detect drift or regressions.
+* **Implementation Steps:**
+    1. Capture input/output embeddings and key stats (hashed for privacy) for drift detection.
+    2. Set up dashboards for model performance and drift alerts.
+    3. Document monitoring procedures and response playbooks.
+
+#### Module 7.7: Cost & Capacity Planning
+* **Goal:** Ensure sustainable scaling and cost management.
+* **Implementation Steps:**
+    1. Add real-time token telemetry and cost dashboards.
+    2. Introduce caching for repeated analyses of identical résumés.
+    3. Document free-tier limitations and scale-up triggers.
+    4. Review and optimize infrastructure usage quarterly.
+
+#### Module 7.8: Multi-Format Ingestion
+* **Goal:** Support DOCX, ODT, and image-based PDF uploads.
+* **Implementation Steps:**
+    1. Extend parsing layer to support python-docx, Apache Tika, and fallback OCR (Tesseract).
+    2. Add automated tests for all supported formats.
+    3. Update user documentation and UI cues for new formats.
+
+#### Module 7.9: User Support & Feedback Loop
+* **Goal:** Provide robust user support and continuous improvement.
+* **Implementation Steps:**
+    1. Implement in-app "Report an issue / suggest improvement" channel wired to ticket system.
+    2. Track SLA metrics (first response, resolution time) in monitoring stack.
+    3. Regularly review user feedback and update roadmap accordingly.
+
+#### Module 8: Zero-Budget Launch & Operations Playbook
+* **Goal:** Implement and document a sustainable $0-budget strategy for launching and operating the MVP.
+* **Implementation Steps:**
+    1. **Quick-Win Features Implementation:**
+        - Set up multi-format upload using native browser APIs and open-source libraries
+        - Implement JD keyword matching with spaCy tokenizer
+        - Add readability & ATS linting with textstat
+        - Create instant demo mode with static files
+        - Set up usage analytics with PostHog Open Source
+
+    2. **Free-Tier Infrastructure Setup:**
+        - Deploy frontend to GitHub Pages with Cloudflare DNS
+        - Set up backend on Fly.io/Render free tier
+        - Configure GitHub Actions for CI/CD
+        - Implement Playwright for cross-browser testing
+        - Set up Grafana Cloud Free for monitoring
+
+    3. **Security & Compliance:**
+        - Integrate Dependabot for dependency updates
+        - Set up Trivy for security scanning
+        - Configure OWASP ZAP for penetration testing
+        - Document security posture and limitations
+
+    4. **Cost Management & Scaling Triggers:**
+        - Document free-tier limitations and workarounds
+        - Define clear scaling triggers (e.g., 50k analyses/month)
+        - Create cost projection models
+        - Plan for SOC 2/SLA requirements
+
+    5. **Feature Prioritization:**
+        - Document accepted limitations in free tier
+        - Create roadmap for paid features
+        - Define MVP vs. future feature set
+        - Plan for gradual feature rollout
+
+    6. **Monitoring & Analytics:**
+        - Set up log rotation for disk management
+        - Implement usage funnel tracking
+        - Configure performance monitoring
+        - Create cost tracking dashboards
+
+    7. **Documentation & Knowledge Base:**
+        - Document free-tier setup process
+        - Create troubleshooting guides
+        - Maintain scaling playbook
+        - Document cost optimization strategies
+
 ## Future Enhancements
 
 1. **Advanced Analysis Features**

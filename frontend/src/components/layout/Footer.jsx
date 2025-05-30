@@ -1,4 +1,5 @@
 import React from 'react';
+//eslint-disable-next-line
 import { motion } from 'framer-motion';
 import { Heart, Coffee, Zap } from 'lucide-react';
 

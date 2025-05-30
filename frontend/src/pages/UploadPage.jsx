@@ -42,6 +42,8 @@ const UploadPage = () => {
   const [infoMessage, setInfoMessage] = useState('');
   const [conflict, setConflict] = useState(false);
   const textAreaRef = useRef(null);
+  const resumeFileInputRef = useRef(null);
+  const [fileInputKey, setFileInputKey] = useState(Date.now());
 
   const handleSubmit = async () => {
     setError(null); // Clear previous errors
@@ -80,7 +82,7 @@ const UploadPage = () => {
       if (import.meta.env.MODE !== 'production') {
         setTimeout(() => setIsLoading(false), 600);
       } else {
-        setIsLoading(false);
+      setIsLoading(false);
       }
     }
   };
@@ -103,11 +105,16 @@ const UploadPage = () => {
       if (file.type !== 'application/pdf') {
         setFileTypeError('Please upload a PDF file');
         // Do not clear the resume textarea
+        if (resumeFileInputRef.current) resumeFileInputRef.current.value = '';
+        setFileInputKey(Date.now());
         return;
-      }
+        }
       // Do NOT setResume here! Let the user type or paste if they want.
       console.log("Selected file:", file.name);
     }
+    // Always reset the file input so selecting the same file again triggers onChange
+    if (resumeFileInputRef.current) resumeFileInputRef.current.value = '';
+    setFileInputKey(Date.now());
   };
 
   const handleDrop = useCallback((event) => {
@@ -266,31 +273,36 @@ const UploadPage = () => {
             {resumeInputMethod === 'upload' && !conflict && (
               <div id="upload-panel" role="tabpanel" aria-labelledby="upload-tab">
                 <div className="mb-2 text-sm text-muted-foreground">Upload your resume as a PDF file.</div>
-                <motion.div
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                  onClick={() => document.getElementById('resumeFileInput').click()}
-                  whileHover={{ scale: 1.02 }}
-                  className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-all duration-300 cursor-pointer ${
-                    isDragOver 
-                      ? 'border-primary bg-primary/10' 
-                      : 'border-input hover:border-primary/70'
-                  }`}
+            <motion.div
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+                  onClick={() => {
+                    if (resumeFileInputRef.current) resumeFileInputRef.current.value = '';
+                    resumeFileInputRef.current?.click();
+                  }}
+              whileHover={{ scale: 1.02 }}
+              className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-all duration-300 cursor-pointer ${
+                isDragOver 
+                  ? 'border-primary bg-primary/10' 
+                  : 'border-input hover:border-primary/70'
+              }`}
                   data-testid="drop-zone"
-                >
-                  <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground font-inter">
+            >
+              <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+              <p className="text-sm text-muted-foreground font-inter">
                     Drag & drop your PDF resume here or click to browse
-                  </p>
-                  {fileName && <p className="text-xs text-primary mt-1">Selected: {fileName}</p>}
-                  <input
-                    id="resumeFileInput" 
-                    type="file"
+              </p>
+              {fileName && <p className="text-xs text-primary mt-1">Selected: {fileName}</p>}
+              <input
+                    key={fileInputKey}
+                id="resumeFileInput" 
+                type="file"
                     accept=".pdf" 
-                    onChange={handleFileChange}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                  />
+                onChange={handleFileChange}
+                    ref={resumeFileInputRef}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
                   {resumeFile && (
                     <button
                       type="button"
@@ -300,7 +312,7 @@ const UploadPage = () => {
                       Remove PDF
                     </button>
                   )}
-                </motion.div>
+            </motion.div>
                 {resumeError && (
                   <div className="text-red-600 text-sm mt-1" data-testid="resume-error">{resumeError}</div>
                 )}
