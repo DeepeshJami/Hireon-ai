@@ -9,3 +9,5 @@ pytest
 pytest-asyncio
 httpx
 python-multipart 
+google-auth>=2.28
+google-auth-oauthlib>=1.2   # only if you use OAuth flow helpers
