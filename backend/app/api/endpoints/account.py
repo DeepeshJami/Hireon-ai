@@ -1,11 +1,8 @@
 from fastapi import APIRouter, Depends
-from .analysis import optional_google_user, get_usage
+from .analysis import optional_google_user
 
 router = APIRouter()
 
 @router.get("/me")
 async def me(google_uid: str = Depends(optional_google_user)):
-    if not google_uid:
-        return {"error": "Not authenticated"}
-    used = await get_usage(google_uid)
-    return {"used": used, "limit": 20} 
+    return {"free": True} 

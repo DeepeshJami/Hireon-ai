@@ -61,7 +61,7 @@ const HeroSection = ({ onCTAClick }) => {
             >
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                <span>20 free uses/month</span>
+                <span>Free Forever</span>
               </div>
             </motion.div>
           </div>

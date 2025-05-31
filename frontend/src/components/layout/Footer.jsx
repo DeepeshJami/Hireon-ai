@@ -33,7 +33,7 @@ const Footer = () => {
             <div className="flex items-center justify-center gap-6 text-sm text-gray-600 dark:text-gray-300">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                <span>No account needed</span>
+                <span>Free forever</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
@@ -83,9 +83,9 @@ const Footer = () => {
           <div className="flex items-center justify-center gap-8 text-xs text-gray-500 dark:text-gray-400">
             <span>Privacy First</span>
             <span>•</span>
-            <span>Open Source</span>
+            <span>Closed Source</span>
             <span>•</span>
-            <span>Always Free Tier</span>
+            <span>Free Tier</span>
           </div>
         </motion.div>
       </div>

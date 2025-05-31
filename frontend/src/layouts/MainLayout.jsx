@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useTheme } from 'next-themes';
 import { Sun, Moon, LogOut, User } from 'lucide-react';
@@ -14,7 +14,6 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from '../components/ui/dropdown-menu';
-import { Progress } from '../components/ui/progress';
 
 function decodeJwt(token) {
   if (!token) return null;
@@ -39,28 +38,6 @@ const MainLayout = () => {
   const { theme, setTheme } = useTheme();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
-  const [quota, setQuota] = useState({ used: 0, limit: 20 });
-
-  const fetchQuota = useCallback(async () => {
-    if (isAuthenticated) {
-      try {
-        const res = await fetch('/api/account/me', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('g_id_token')}` },
-          credentials: 'include',
-        });
-        const data = await res.json();
-        console.log('Quota API response:', data); // Debugging
-        if (data.error || typeof data.used !== 'number' || typeof data.limit !== 'number') {
-          setQuota({ used: 0, limit: 20 }); // fallback
-        } else {
-          setQuota(data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch quota:', error);
-        setQuota({ used: 0, limit: 20 }); // fallback
-      }
-    }
-  }, [isAuthenticated]);
 
   useEffect(() => {
     const token = localStorage.getItem('g_id_token');
@@ -75,17 +52,6 @@ const MainLayout = () => {
     window.addEventListener('storage', handleStorage);
     return () => window.removeEventListener('storage', handleStorage);
   }, []);
-
-  useEffect(() => {
-    fetchQuota();
-  }, [isAuthenticated, fetchQuota]);
-
-  // Expose fetchQuota through context
-  useEffect(() => {
-    if (window.appContext) {
-      window.appContext.fetchQuota = fetchQuota;
-    }
-  }, [fetchQuota]);
 
   const handleSignOut = () => {
     localStorage.removeItem('g_id_token');
@@ -136,15 +102,6 @@ const MainLayout = () => {
                     <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Signed in as</div>
                     <div className="font-semibold text-gray-900 dark:text-white text-base leading-tight truncate">{userName}</div>
                   </div>
-                  <DropdownMenuSeparator className="my-0" />
-                  <DropdownMenuItem disabled className="flex flex-col items-start py-3 px-5 w-full cursor-default">
-                    <span className="text-xs text-muted-foreground mb-1">Quota</span>
-                    <div className="w-full flex items-center gap-2">
-                      <Progress value={Math.min(100, (quota.used / quota.limit) * 100)} className="w-24 h-2" />
-                      <span className="text-xs">{quota.limit - quota.used} left</span>
-                    </div>
-                    <span className="text-xs text-muted-foreground mt-1">{quota.used} of {quota.limit} used this month</span>
-                  </DropdownMenuItem>
                   <DropdownMenuSeparator className="my-0" />
                   <DropdownMenuItem disabled className="px-5 py-3 text-gray-400 cursor-not-allowed text-sm">
                     <User className="mr-2 h-4 w-4 opacity-60" /> Profile
