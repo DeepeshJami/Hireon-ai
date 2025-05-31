@@ -2,6 +2,7 @@ import React from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
 import { ArrowRight, FileText, Sparkles } from 'lucide-react';
+import { GoogleSignIn } from '../GoogleSignIn';
 
 // Converted from HeroProps interface for JSX
 const HeroSection = ({ onCTAClick }) => {
@@ -47,6 +48,9 @@ const HeroSection = ({ onCTAClick }) => {
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 {/* Original mockup had a div for hover effect, simplified for now if not directly translatable or if it relies on specific ::before/::after setup not present */}
               </button>
+              <div className="mt-6">
+                <GoogleSignIn />
+              </div>
             </motion.div>
 
             <motion.div
@@ -58,10 +62,6 @@ const HeroSection = ({ onCTAClick }) => {
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                 <span>20 free uses/month</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-                <span>No account needed</span>
               </div>
             </motion.div>
           </div>

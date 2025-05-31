@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import logging # Import the logging module
 from fastapi.responses import JSONResponse # Add JSONResponse
+from app.middleware.anon_id import EnsureAnonID
 
 # Configure basic logging
 # This will output logs to the console. For production, you might want to configure a more robust setup
@@ -15,6 +16,7 @@ logger = logging.getLogger(__name__) # Get a logger for the main module
 # print(f"[SETUP_VERIFICATION] Loaded OpenAI API Key: {settings.OPENAI_API_KEY}") # Re-commented or removed
 
 from app.api.endpoints import analysis as analysis_endpoints # Import the analysis router
+from app.api.endpoints import account as account_endpoints # Import the account router
 
 app = FastAPI(
     title="Hireon AI Backend",
@@ -31,6 +33,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.add_middleware(EnsureAnonID)
+
 class HealthCheckResponse(BaseModel):
     status: str = "OK"
 
@@ -44,6 +48,8 @@ async def health_check():
 
 # Include the analysis router
 app.include_router(analysis_endpoints.router, prefix="/api", tags=["Analysis"])
+# Include the account router
+app.include_router(account_endpoints.router, prefix="/api/account", tags=["Account"])
 
 # --- Global Exception Handler ---
 @app.exception_handler(Exception) # Handle generic Exceptions

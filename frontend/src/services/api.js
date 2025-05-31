@@ -11,6 +11,15 @@ const apiClient = axios.create({
   withCredentials: true, // Enable sending cookies if needed
 });
 
+// Add interceptor to include Google ID token if present
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('g_id_token');
+  if (token) {
+    config.headers['Authorization'] = `Bearer ${token}`;
+  }
+  return config;
+});
+
 /**
  * Calls the backend API to analyze the resume and job description.
  * @param {File} resumeFile - The resume file (PDF).
@@ -38,6 +47,11 @@ export const analyzeResumeWithAPI = async (resumeFile, jobDescription) => {
       // that falls out of the range of 2xx
       console.error("Error response data:", error.response.data);
       console.error("Error response status:", error.response.status);
+      if (error.response.status === 401) {
+        const err = new Error('Login required');
+        err.code = 401;
+        throw err;
+      }
       throw new Error(error.response.data.detail || 'API request failed');
     } else if (error.request) {
       // The request was made but no response was received

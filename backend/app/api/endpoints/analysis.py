@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile, File, Form, HTTPException
+from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends, Request, Header
 from pydantic import BaseModel, Field
 from typing import List
 import logging # Import logging
@@ -6,6 +6,12 @@ import logging # Import logging
 from app.services.pdf_parser import parse_pdf_to_text
 from app.services.openai_analyzer import get_ai_analysis, AIResponseSchema
 from app.utils.resume_analyzer_utils import calculate_word_count, calculate_readability_score
+
+# --- Google Auth imports ---
+from google.oauth2 import id_token
+from google.auth.transport import requests as grequests
+GOOGLE_CLIENT_ID = "531200600262-iofhv33pktoo6froa80rrnj4gm1m0722.apps.googleusercontent.com"  # TODO: Replace with your real client ID
+# --------------------------
 
 logger = logging.getLogger(__name__) # Get a logger for this module
 
@@ -24,14 +30,59 @@ class FullAnalysisResponse(BaseModel):
     suggestions: List[str] = Field(default_factory=list, max_items=7)
     resume_stats: ResumeStats
 
+LIMIT = 20
+ANON_LIMIT = 1
+
+# In-memory usage tracker
+from datetime import datetime
+usage_store = {}
+def month_key():
+    now = datetime.utcnow()
+    return f"{now.year}-{now.month:02d}"
+async def incr_and_get(uid):
+    key = f"{uid}:{month_key()}"
+    usage_store[key] = usage_store.get(key, 0) + 1
+    return usage_store[key]
+async def get_usage(uid):
+    key = f"{uid}:{month_key()}"
+    return usage_store.get(key, 0)
+
+async def optional_google_user(authorization: str = Header(None)) -> str | None:
+    if not authorization or not authorization.startswith("Bearer "):
+        return None
+    token = authorization.split(" ", 1)[1]
+    try:
+        info = id_token.verify_oauth2_token(token, grequests.Request(), GOOGLE_CLIENT_ID)
+        return info["sub"]  # This is the unique Google user ID
+    except Exception as e:
+        logger.warning(f"Google token verification failed: {e}")
+        return None
+
+async def rate_limit(
+    request: Request,
+    google_uid: str | None = Depends(optional_google_user)
+):
+    uid   = google_uid or request.state.anon_uid
+    limit = LIMIT if google_uid else ANON_LIMIT
+
+    used = await incr_and_get(uid)   # atomic INCR, returns new count
+    if used > limit:
+        if google_uid:
+            raise HTTPException(402, "Free quota exhausted")
+        raise HTTPException(401, "Login required")
+
+    request.state.user_id = uid
+
 @router.post("/analyze", 
              response_model=FullAnalysisResponse,
              summary="Full Resume Analysis",
              description="Accepts a PDF resume and job description, performs AI analysis and calculates resume statistics."
             )
 async def analyze_resume_fully(
+    request: Request,
     resume_file: UploadFile = File(..., description="The PDF resume file to be analyzed."),
-    job_description: str = Form(..., description="The job description text.")
+    job_description: str = Form(..., description="The job description text."),
+    _=Depends(rate_limit)
 ):
     """
     Analyzes resume against job description, providing a match score, missing keywords,
@@ -83,3 +134,13 @@ async def analyze_resume_fully(
         suggestions=ai_analysis_result.suggestions,
         resume_stats=resume_stats_data
     ) 
+
+@router.get("/quota")
+async def get_quota(request: Request, google_uid: str | None = Depends(optional_google_user)):
+    LIMIT = 20
+    ANON_LIMIT = 1
+    uid = google_uid or request.state.anon_uid
+    limit = LIMIT if google_uid else ANON_LIMIT
+    used = await get_usage(uid)
+    logger.info(f"/quota: uid={uid}, used={used}, limit={limit}")
+    return {"used": used, "limit": limit} 

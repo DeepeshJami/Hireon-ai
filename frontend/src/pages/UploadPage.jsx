@@ -6,6 +6,7 @@ import LoadingModal from '../components/feedback/LoadingModal';
 import { useAppContext } from '../context/AppContext';
 import { analyzeResumeWithAPI } from '../services/api'; // Import the API service
 import AnalysisResult from '../components/results/AnalysisResult'; // Import AnalysisResult
+import { GoogleSignIn } from '../components/GoogleSignInUploadPage';
 
 // Mock onEvaluate function for now - this will be replaced by API call logic
 // const mockOnEvaluate = (resume, jobDescription) => {
@@ -34,7 +35,6 @@ const UploadPage = () => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [fileName, setFileName] = useState(null); // To display the name of the uploaded/dragged file
   const [resumeError, setResumeError] = useState(null);
-  const [jobDescriptionError, setJobDescriptionError] = useState(null);
   const [fileTypeError, setFileTypeError] = useState(null);
   // Add state for input method
   const [resumeInputMethod, setResumeInputMethod] = useState('upload'); // 'upload' or 'text'
@@ -44,46 +44,41 @@ const UploadPage = () => {
   const textAreaRef = useRef(null);
   const resumeFileInputRef = useRef(null);
   const [fileInputKey, setFileInputKey] = useState(Date.now());
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const handleSubmit = async () => {
     setError(null); // Clear previous errors
     setAnalysisResult(null); // Clear previous results
-    setResumeError(null);
-    setJobDescriptionError(null);
-    setFileTypeError(null);
 
-    let hasError = false;
-    // Allow either a file OR text
-    if (!resumeFile && resume.trim() === '') {
-      setResumeError('Please upload a PDF resume or paste your resume text.');
-      hasError = true;
+    if (!resumeFile && resume.trim() === '') { // Check if no file and no pasted text
+      setError('Please upload or paste your resume content.');
+      return;
     }
     if (!jobDescription.trim()) {
-      setJobDescriptionError('Please provide a job description');
-      hasError = true;
+      setError('Please paste the job description.');
+      return;
     }
-    if (hasError) return;
 
     setIsLoading(true);
     try {
-      let fileToSend = resumeFile;
-      if (!resumeFile) {
-        // Create a text file from the textarea content
-        fileToSend = new File([resume], "resume.txt", { type: "text/plain" });
-      }
-      const result = await analyzeResumeWithAPI(fileToSend, jobDescription);
+      // If resumeFile is present, use it. Otherwise, create a File object from pasted text.
+      const fileToUpload = resumeFile || new File([resume], fileName || 'resume.txt', { type: 'text/plain' });
+      
+      const result = await analyzeResumeWithAPI(fileToUpload, jobDescription);
       setAnalysisResult(result);
+      
+      // Update quota after successful analysis
+      if (window.appContext?.fetchQuota) {
+        await window.appContext.fetchQuota();
+      }
+      
+      // For now, just an alert. Later, we will navigate to a results page or display here.
     } catch (apiError) {
       console.error("API Error in handleSubmit:", apiError);
       setError(apiError.response?.data?.detail || apiError.message || 'Failed to analyze. Please try again.');
       alert(`Error: ${apiError.response?.data?.detail || apiError.message || 'Failed to analyze. Please try again.'}`); // Temporary alert for user
     } finally {
-      // Add a short delay for test/dev so loading modal is visible
-      if (import.meta.env.MODE !== 'production') {
-        setTimeout(() => setIsLoading(false), 600);
-      } else {
       setIsLoading(false);
-      }
     }
   };
 
@@ -206,6 +201,17 @@ const UploadPage = () => {
   return (
     // Main container for the page content
     <div className="container mx-auto px-6 py-10 md:py-16">
+      {/* Login Modal */}
+      {showLoginModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl p-8 max-w-sm w-full flex flex-col items-center">
+            <h3 className="text-xl font-semibold mb-4 text-center text-foreground">Sign in to continue</h3>
+            <p className="mb-6 text-muted-foreground text-center">You need to sign in with Google to continue using Hireon AI.</p>
+            <GoogleSignIn />
+            <button className="mt-6 text-sm text-gray-500 hover:underline" onClick={() => setShowLoginModal(false)}>Cancel</button>
+          </div>
+        </div>
+      )}
       {/* Loading Modal is rendered conditionally based on isLoading state */}
       <LoadingModal isVisible={isLoading} onComplete={handleLoadingComplete} />
 
@@ -384,9 +390,6 @@ const UploadPage = () => {
                 className="w-full h-72 md:h-96 p-4 rounded-lg border-2 border-input focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all duration-300 resize-none bg-background text-foreground placeholder:text-muted-foreground font-inter"
                 data-testid="job-description-input"
               />
-              {jobDescriptionError && (
-                <div className="text-red-600 text-sm mt-1" data-testid="job-description-error">{jobDescriptionError}</div>
-              )}
             </div>
             <div className="bg-primary/10 rounded-md p-4 border border-primary/20">
               <p className="text-primary text-sm font-inter">
