@@ -2,6 +2,7 @@ import React from 'react';
 //eslint-disable-next-line
 import { motion } from 'framer-motion';
 import { Heart, Coffee, Zap } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -68,7 +69,10 @@ const Footer = () => {
             </motion.div>
             
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-              © {new Date().getFullYear()} Hireon AI. Helping you get hired smarter.
+              {new Date().getFullYear()} Hireon AI. Helping you get hired smarter.
+            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+              Developed by <a href="https://www.linkedin.com/in/deepeshjami/" className="text-blue-500 hover:underline">Deepesh Jami</a>
             </p>
           </div>
         </div>
@@ -81,6 +85,10 @@ const Footer = () => {
           className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700 text-center"
         >
           <div className="flex items-center justify-center gap-8 text-xs text-gray-500 dark:text-gray-400">
+            <Link to="/about" className="hover:underline">About</Link>
+            <span>•</span>
+            <Link to="/privacy" className="hover:underline">Privacy</Link>
+            <span>•</span>
             <span>Privacy First</span>
             <span>•</span>
             <span>Closed Source</span>
