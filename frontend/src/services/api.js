@@ -32,8 +32,8 @@ export const analyzeResumeWithAPI = async (resumeFile, jobDescription) => {
   formData.append('job_description', jobDescription);
 
   try {
-    console.log('Sending analysis request to:', `${API_URL}/analyze`);
-    const response = await apiClient.post('/analyze', formData, {
+    console.log('Sending analysis request to:', `${API_URL}/api/analyze`);
+    const response = await apiClient.post('/api/analyze', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
