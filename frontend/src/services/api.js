@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// Use environment variable for API base URL
-const API_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+// Use environment variable for API base URL without /api prefix
+const API_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 const apiClient = axios.create({
   baseURL: API_URL,
