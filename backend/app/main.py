@@ -28,7 +28,7 @@ origins = [
     "http://localhost:5173",                      # local dev
     "https://hireon-ai.vercel.app",               # prod frontend
     "https://*.vercel.app"
-    "https://hireon-819r0v4t9-deepesh-jami.vercel.app",                       # all preview deploys
+    "https://hireon-ai.vercel.app",                       # all preview deploys
 ]
 
 # Add CORS middleware
