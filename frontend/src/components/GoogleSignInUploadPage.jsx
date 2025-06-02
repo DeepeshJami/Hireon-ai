@@ -18,14 +18,13 @@ export function GoogleSignIn() {
 
   return (
     <button
-      className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm hover:shadow-md transition-all text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800"
-      style={{ minWidth: 0 }}
+      className="flex items-center justify-center w-10 h-10 rounded-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm hover:shadow-md transition-all text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"
       tabIndex={0}
       type="button"
       aria-label="Sign in with Google"
       onClick={() => login()}
     >
-      <svg width="20" height="20" viewBox="0 0 48 48" className="mr-1">
+      <svg width="20" height="20" viewBox="0 0 48 48">
         <g>
           <path fill="#4285F4" d="M24 9.5c3.54 0 6.7 1.22 9.19 3.23l6.85-6.85C36.64 2.36 30.74 0 24 0 14.82 0 6.73 5.06 2.69 12.44l7.98 6.2C12.13 13.13 17.62 9.5 24 9.5z"/>
           <path fill="#34A853" d="M46.1 24.55c0-1.64-.15-3.22-.43-4.74H24v9.01h12.42c-.54 2.9-2.18 5.36-4.66 7.03l7.2 5.6C43.98 37.13 46.1 31.36 46.1 24.55z"/>
@@ -34,7 +33,6 @@ export function GoogleSignIn() {
           <path fill="none" d="M0 0h48v48H0z"/>
         </g>
       </svg>
-      <span>Sign in with Google</span>
     </button>
   );
 } 

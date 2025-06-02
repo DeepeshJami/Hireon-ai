@@ -66,11 +66,13 @@ const MainLayout = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground font-inter">
       <header className="bg-card border-b border-border shadow-sm px-3 sm:px-4 py-3 sticky top-0 z-50">
-        <div className="w-full flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <HireonLogo style={{ fontSize: '1rem' }} className="text-base sm:text-lg" />
+        <div className="w-full flex flex-row items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center">
+            <HireonLogo style={{ fontSize: '1.25rem' }} className="text-lg sm:text-xl" />
           </div>
-          <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
+          {/* Controls */}
+          <div className="flex items-center gap-2 sm:gap-4">
             <Button 
               variant="outline" 
               size="icon"
@@ -84,9 +86,7 @@ const MainLayout = () => {
               )}
             </Button>
             {!isAuthenticated ? (
-              <div className="w-full sm:w-auto flex justify-center">
-                <GoogleSignIn />
-              </div>
+              <GoogleSignIn />
             ) : (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
