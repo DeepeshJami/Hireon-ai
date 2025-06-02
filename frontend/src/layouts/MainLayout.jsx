@@ -5,7 +5,7 @@ import { Sun, Moon, LogOut, User } from 'lucide-react';
 import Footer from '../components/layout/Footer';
 import { Button } from '../components/ui/button';
 import HireonLogo from '../components/HireonLogo';
-import { GoogleSignIn } from '../components/GoogleSignInUploadPage';
+import { GoogleSignIn } from '../components/GoogleSignIn';
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
 import {
   DropdownMenu,
