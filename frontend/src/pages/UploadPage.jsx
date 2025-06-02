@@ -278,55 +278,106 @@ const UploadPage = () => {
             {/* Show only the selected input method */}
             {resumeInputMethod === 'upload' && !conflict && (
               <div id="upload-panel" role="tabpanel" aria-labelledby="upload-tab">
-                <div className="mb-2 text-xs sm:text-sm text-muted-foreground">Upload your resume as a PDF file.</div>
-            <motion.div
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-                  onClick={() => {
-                    if (resumeFileInputRef.current) resumeFileInputRef.current.value = '';
-                    resumeFileInputRef.current?.click();
-                  }}
-              whileHover={{ scale: 1.02 }}
-              className={`relative border-2 border-dashed rounded-lg p-4 sm:p-6 text-center transition-all duration-300 cursor-pointer ${
-                isDragOver 
-                  ? 'border-primary bg-primary/10' 
-                  : 'border-input hover:border-primary/70'
-              }`}
+                <div className="mb-4 text-xs sm:text-sm text-muted-foreground">Upload your resume as a PDF file.</div>
+                <motion.div
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
+                  className={`relative border-2 border-dashed rounded-2xl p-6 sm:p-8 text-center transition-all duration-300 cursor-pointer ${
+                    isDragOver 
+                      ? 'border-primary bg-gradient-to-r from-blue-100/60 to-indigo-100/60 dark:from-blue-900/30 dark:to-indigo-900/30' 
+                      : 'border-input hover:border-primary/70 bg-gradient-to-r from-white to-gray-50 dark:from-gray-900 dark:to-gray-800'
+                  }`}
                   data-testid="drop-zone"
-            >
-              <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-              <p className="text-xs sm:text-sm text-muted-foreground font-inter">
-                    Drag & drop your PDF resume here or click to browse
-              </p>
-              {fileName && <p className="text-xs text-primary mt-1">Selected: {fileName}</p>}
-              <input
+                >
+                  <div className="flex flex-col items-center justify-center space-y-4">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-indigo-600/20 rounded-full blur-xl"></div>
+                      <Upload className="w-10 h-10 text-primary relative z-10 drop-shadow-lg" />
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-sm sm:text-base text-muted-foreground font-medium">
+                        Drag & drop your PDF resume here
+                      </p>
+                      <p className="text-xs text-muted-foreground/70">
+                        or
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (resumeFileInputRef.current) resumeFileInputRef.current.value = '';
+                          resumeFileInputRef.current?.click();
+                        }}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 active:scale-95 text-white rounded-xl text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
+                      >
+                        <Upload className="w-4 h-4" />
+                        Choose PDF File
+                      </button>
+                    </div>
+                  </div>
+                  <input
                     key={fileInputKey}
-                id="resumeFileInput" 
-                type="file"
+                    id="resumeFileInput" 
+                    type="file"
                     accept=".pdf" 
-                onChange={handleFileChange}
+                    onChange={handleFileChange}
                     ref={resumeFileInputRef}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-              />
-                  {resumeFile && (
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                </motion.div>
+
+                {/* File Display Card */}
+                {resumeFile && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-4 bg-gradient-to-r from-blue-50 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/40 border border-blue-200 dark:border-blue-800 rounded-xl p-4 shadow-lg flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="bg-blue-500/10 dark:bg-blue-800/30 p-2 rounded-lg">
+                        <FileText className="w-5 h-5 text-blue-600 dark:text-blue-300" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-foreground truncate max-w-[200px]">
+                          {fileName}
+                        </p>
+                        <p className="text-xs text-blue-600 dark:text-blue-300 font-semibold uppercase tracking-wide">
+                          PDF Document
+                        </p>
+                      </div>
+                    </div>
                     <button
                       type="button"
-                      className="absolute top-2 right-2 bg-red-500 text-white rounded px-2 py-1 text-xs z-10"
                       onClick={() => { setResumeFile(null); setFileName(null); }}
+                      className="p-1.5 hover:bg-red-500/10 rounded-lg transition-colors group"
                     >
-                      Remove PDF
+                      <svg
+                        className="w-4 h-4 text-red-500 group-hover:text-red-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
                     </button>
-                  )}
-            </motion.div>
+                  </motion.div>
+                )}
+
                 {resumeError && (
-                  <div className="text-red-600 text-xs sm:text-sm mt-1" data-testid="resume-error">{resumeError}</div>
+                  <div className="text-red-600 text-xs sm:text-sm mt-3" data-testid="resume-error">{resumeError}</div>
                 )}
                 {fileTypeError && (
-                  <div className="text-red-600 text-xs sm:text-sm mt-1" data-testid="file-type-error">{fileTypeError}</div>
+                  <div className="text-red-600 text-xs sm:text-sm mt-3" data-testid="file-type-error">{fileTypeError}</div>
                 )}
                 {infoMessage && (
-                  <div className="mt-2 text-xs text-blue-600 text-center">{infoMessage}</div>
+                  <div className="mt-3 text-xs text-blue-600 text-center">{infoMessage}</div>
                 )}
               </div>
             )}
