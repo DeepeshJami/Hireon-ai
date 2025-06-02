@@ -24,18 +24,18 @@ const MatchScoreDisplay = ({ score, rating }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="bg-card p-6 rounded-xl shadow-lg border border-border text-center"
+      className="bg-card p-4 sm:p-6 rounded-xl shadow-lg border border-border text-center"
       data-testid="match-score-container"
     >
-      <Target className={`w-12 h-12 mx-auto mb-4 ${getScoreColor()}`} />
-      <h3 className="text-xl font-semibold font-inter text-foreground mb-1">
+      <Target className={`w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 ${getScoreColor()}`} />
+      <h3 className="text-lg sm:text-xl font-semibold font-inter text-foreground mb-1">
         Match Score
       </h3>
-      <p className={`text-5xl font-bold font-inter ${getScoreColor()} mb-2`} data-testid="match-score">
+      <p className={`text-3xl sm:text-5xl font-bold font-inter ${getScoreColor()} mb-2`} data-testid="match-score">
         {score}%
       </p>
       {rating && (
-        <span className={`px-3 py-1 text-sm font-medium rounded-full ${getRatingColor()} font-inter`} data-testid="match-rating">
+        <span className={`px-3 py-1 text-xs sm:text-sm font-medium rounded-full ${getRatingColor()} font-inter`} data-testid="match-rating">
           {rating}
         </span>
       )}

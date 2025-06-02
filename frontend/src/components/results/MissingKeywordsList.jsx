@@ -1,19 +1,19 @@
 import React from 'react';
-import { motion } from 'framer-motion'; // Restoring import for motion.div and motion.li
+import { motion } from 'framer-motion';
 import { XCircle, AlertTriangle } from 'lucide-react';
 
 const MissingKeywordsList = ({ keywords }) => {
   if (!keywords || keywords.length === 0) {
     return (
       // No motion here as it's a fallback static display
-      <div className="bg-card p-6 rounded-xl shadow-lg border border-border">
-        <div className="flex items-center gap-3 mb-3">
-          <AlertTriangle className="w-6 h-6 text-yellow-500" />
-          <h3 className="text-xl font-semibold font-inter text-foreground">
+      <div className="bg-card p-4 sm:p-6 rounded-xl shadow-lg border border-border">
+        <div className="flex items-center gap-3 mb-2 sm:mb-3">
+          <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500" />
+          <h3 className="text-lg sm:text-xl font-semibold font-inter text-foreground">
             Missing Keywords
           </h3>
         </div>
-        <p className="text-muted-foreground font-inter text-sm">No significant missing keywords identified, or this section is not applicable.</p>
+        <p className="text-muted-foreground font-inter text-xs sm:text-sm">No significant missing keywords identified, or this section is not applicable.</p>
       </div>
     );
   }
@@ -23,12 +23,12 @@ const MissingKeywordsList = ({ keywords }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.1 }}
-      className="bg-card p-6 rounded-xl shadow-lg border border-border"
+      className="bg-card p-4 sm:p-6 rounded-xl shadow-lg border border-border"
       data-testid="missing-keywords-container"
     >
-      <div className="flex items-center gap-3 mb-4">
-        <XCircle className="w-6 h-6 text-red-500" />
-        <h3 className="text-xl font-semibold font-inter text-foreground">
+      <div className="flex items-center gap-3 mb-3 sm:mb-4">
+        <XCircle className="w-5 h-5 sm:w-6 sm:h-6 text-red-500" />
+        <h3 className="text-lg sm:text-xl font-semibold font-inter text-foreground">
           Missing Keywords
         </h3>
       </div>
@@ -39,14 +39,14 @@ const MissingKeywordsList = ({ keywords }) => {
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3, delay: index * 0.05 }}
-            className="flex items-center gap-2 text-sm text-muted-foreground font-inter bg-muted/50 p-2 rounded-md"
+            className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground font-inter bg-muted/50 p-2 rounded-md"
             data-testid="missing-keyword-item"
           >
             <span>- {keyword}</span>
           </motion.li>
         ))}
       </ul>
-      <p className="text-xs text-muted-foreground mt-4 font-inter">
+      <p className="text-xs text-muted-foreground mt-3 sm:mt-4 font-inter">
         Consider incorporating these terms if relevant and accurate to your experience.
       </p>
     </motion.div>

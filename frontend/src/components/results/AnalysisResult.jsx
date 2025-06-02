@@ -17,15 +17,15 @@ const AnalysisResult = () => {
   if (error) {
     return (
       <div
-        className="my-8 p-6 bg-red-500/10 border border-red-500/30 rounded-lg shadow-md"
+        className="my-6 sm:my-8 p-4 sm:p-6 bg-red-500/10 border border-red-500/30 rounded-lg shadow-md"
       >
         <div className="flex items-center gap-3 mb-2">
-          <AlertTriangle className="w-6 h-6 text-red-600" />
-          <h3 className="text-xl font-semibold text-red-700 dark:text-red-400 font-inter">
+          <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />
+          <h3 className="text-lg sm:text-xl font-semibold text-red-700 dark:text-red-400 font-inter">
             Analysis Error
           </h3>
         </div>
-        <p className="text-red-600 dark:text-red-300 font-inter">
+        <p className="text-red-600 dark:text-red-300 font-inter text-xs sm:text-sm">
           {typeof error === 'string' ? error : error.message || 'An unexpected error occurred.'}
         </p>
       </div>
@@ -53,7 +53,7 @@ const AnalysisResult = () => {
 
   return (
     <div
-      className="my-8 space-y-6"
+      className="my-6 sm:my-8 space-y-4 sm:space-y-6"
       data-testid="analysis-result"
     >
       <div className="flex justify-center">

@@ -72,22 +72,22 @@ const AboutPage = () => {
       {/* ---------- HERO ---------- */}
       <section
         ref={heroRef}
-        className="relative z-10 min-h-[80vh] flex flex-col lg:flex-row items-center justify-center gap-12 px-6 lg:px-16 pt-24 lg:pt-0"
+        className="relative z-10 min-h-[80vh] flex flex-col lg:flex-row items-center justify-center gap-8 sm:gap-12 px-3 sm:px-6 lg:px-16 pt-16 sm:pt-24 lg:pt-0"
       >
         {/* Copy side */}
-        <div className="max-w-xl space-y-6 text-center lg:text-left">
-          <h1 className="text-4xl sm:text-6xl font-semibold leading-tight">
-            Hire smarter.<br className="hidden sm:block" />Interview faster.
+        <div className="max-w-full sm:max-w-xl space-y-4 sm:space-y-6 text-center lg:text-left">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-semibold leading-tight">
+            Get hired smarter.<br className="hidden sm:block" />Interview faster.
           </h1>
-          <p className="text-primary font-medium text-lg sm:text-xl">
+          <p className="text-primary font-medium text-base sm:text-lg md:text-xl">
             Privacy-first. Lightning-fast. No storage. Just better resumes.
           </p>
-          <p className="text-muted-foreground text-base sm:text-lg">
+          <p className="text-muted-foreground text-sm sm:text-base md:text-lg">
             Hireon AI instantly reveals what an Applicant Tracking System thinks of your resume — before a recruiter ever sees it.
           </p>
           <button
-            onClick={() => (window.location.href = '/')}
-            className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-indigo-600 px-8 py-3 text-white font-semibold shadow-xl shadow-primary/30 hover:shadow-primary/50 transition text-lg"
+            onClick={() => (window.location.href = '/upload')}
+            className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-indigo-600 px-6 sm:px-8 py-2.5 sm:py-3 text-white font-semibold shadow-xl shadow-primary/30 hover:shadow-primary/50 transition text-base sm:text-lg"
           >
             Try the demo
             <ArrowUpRight
@@ -100,27 +100,27 @@ const AboutPage = () => {
         {/* 3D Card side */}
         <motion.div
           style={{ rotateX: rotate, rotateY: rotate }}
-          className="w-[300px] sm:w-[360px] aspect-[5/3] rounded-2xl bg-gradient-to-br from-indigo-500/80 to-primary shadow-2xl shadow-primary/40 border border-white/10 backdrop-blur-lg flex flex-col justify-center items-center text-center text-background"
+          className="w-56 sm:w-[300px] md:w-[360px] aspect-[5/3] rounded-2xl bg-gradient-to-br from-indigo-500/80 to-primary shadow-2xl shadow-primary/40 border border-white/10 backdrop-blur-lg flex flex-col justify-center items-center text-center text-background"
         >
-          <p className="text-7xl font-bold tracking-tight">
+          <p className="text-5xl sm:text-7xl font-bold tracking-tight">
             98<span className="text-background/70">%</span>
           </p>
-          <span className="mt-2 font-medium">Get more callbacks</span>
+          <span className="mt-2 font-medium text-xs sm:text-base">Get more callbacks</span>
         </motion.div>
       </section>
 
       {/* ---------- FEATURES CAROUSEL ---------- */}
-      <section className="py-24 bg-gradient-to-b from-muted/10 to-transparent border-y border-border overflow-x-hidden">
-        <ul className="flex gap-8 px-6 lg:px-16 snap-x snap-mandatory overflow-visible">
+      <section className="py-12 sm:py-24 bg-gradient-to-b from-muted/10 to-transparent border-y border-border overflow-x-auto">
+        <ul className="flex gap-4 sm:gap-8 px-3 sm:px-6 lg:px-16 snap-x snap-mandatory overflow-visible">
           {featureCards.map(({ title, copy }) => (
-            <li key={title} className="snap-center shrink-0 w-[280px] sm:w-[320px] flex flex-col">
+            <li key={title} className="snap-center shrink-0 w-64 sm:w-[280px] md:w-[320px] flex flex-col">
               <motion.div
                 whileHover={{ y: -6 }}
-                className="flex-1 rounded-2xl bg-card/80 backdrop-blur-lg border border-border p-6 shadow-md shadow-black/10"
+                className="flex-1 rounded-2xl bg-card/80 backdrop-blur-lg border border-border p-4 sm:p-6 shadow-md shadow-black/10"
               >
-                <Sparkles className="mb-4 text-primary" />
-                <h3 className="text-xl font-semibold mb-2">{title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">{copy}</p>
+                <Sparkles className="mb-3 sm:mb-4 text-primary" />
+                <h3 className="text-lg sm:text-xl font-semibold mb-1 sm:mb-2">{title}</h3>
+                <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed">{copy}</p>
               </motion.div>
             </li>
           ))}
@@ -128,11 +128,11 @@ const AboutPage = () => {
       </section>
 
       {/* ---------- FOUNDER ---------- */}
-      <section className="py-32 bg-gradient-to-b from-muted/5 to-transparent border-t border-border">
-        <div className="container mx-auto px-6 lg:px-16 flex flex-col items-center text-center max-w-2xl gap-6">
+      <section className="py-16 sm:py-32 bg-gradient-to-b from-muted/5 to-transparent border-t border-border">
+        <div className="container mx-auto px-3 sm:px-6 lg:px-16 flex flex-col items-center text-center max-w-full sm:max-w-2xl gap-4 sm:gap-6">
           <div className="relative">
-            <div className="w-36 h-36 rounded-full bg-gradient-to-br from-primary to-indigo-600 flex items-center justify-center shadow-lg shadow-primary/40">
-              <span className="text-white text-5xl font-bold">D</span>
+            <div className="w-24 sm:w-36 h-24 sm:h-36 rounded-full bg-gradient-to-br from-primary to-indigo-600 flex items-center justify-center shadow-lg shadow-primary/40">
+              <span className="text-white text-3xl sm:text-5xl font-bold">D</span>
             </div>
             <motion.span
               initial={{ opacity: 0, scale: 0.2 }}
@@ -143,18 +143,18 @@ const AboutPage = () => {
             />
           </div>
 
-          <h2 className="text-3xl font-semibold flex items-center gap-2">
+          <h2 className="text-2xl sm:text-3xl font-semibold flex items-center gap-2">
             <User className="text-primary" /> Deepesh Jami
           </h2>
-          <p className="text-muted-foreground leading-relaxed">
+          <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">
             Full‑stack engineer, NJIT '25, ex‑Jio Platforms. I build privacy‑first AI products that feel like magic — not machine.
           </p>
-          <div className="flex gap-4 pt-4">
+          <div className="flex gap-3 sm:gap-4 pt-2 sm:pt-4">
             <a
               href="https://github.com/DeepeshJami"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary hover:underline"
+              className="text-primary hover:underline text-xs sm:text-base"
             >
               GitHub
             </a>
@@ -162,7 +162,7 @@ const AboutPage = () => {
               href="https://www.linkedin.com/in/deepeshjami/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary hover:underline"
+              className="text-primary hover:underline text-xs sm:text-base"
             >
               LinkedIn
             </a>

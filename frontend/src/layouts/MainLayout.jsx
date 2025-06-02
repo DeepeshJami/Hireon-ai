@@ -65,12 +65,12 @@ const MainLayout = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground font-inter">
-      <header className="bg-card border-b border-border shadow-sm p-4 sticky top-0 z-50">
+      <header className="bg-card border-b border-border shadow-sm px-3 sm:px-4 py-3 sticky top-0 z-50">
         <div className="w-full flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <HireonLogo style={{ fontSize: '1rem' }} />
+            <HireonLogo style={{ fontSize: '1rem' }} className="text-base sm:text-lg" />
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
             <Button 
               variant="outline" 
               size="icon"
@@ -84,7 +84,9 @@ const MainLayout = () => {
               )}
             </Button>
             {!isAuthenticated ? (
-              <GoogleSignIn />
+              <div className="w-full sm:w-auto flex justify-center">
+                <GoogleSignIn />
+              </div>
             ) : (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -97,7 +99,7 @@ const MainLayout = () => {
                     </span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 rounded-2xl border-0 shadow-2xl backdrop-blur-md bg-white/80 dark:bg-gray-900/80 ring-1 ring-black/10 dark:ring-white/10 p-0 overflow-hidden animate-fade-in">
+                <DropdownMenuContent align="end" className="w-56 max-w-[90vw] rounded-2xl border-0 shadow-2xl backdrop-blur-md bg-white/80 dark:bg-gray-900/80 ring-1 ring-black/10 dark:ring-white/10 p-0 overflow-hidden animate-fade-in">
                   <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-800">
                     <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Signed in as</div>
                     <div className="font-semibold text-gray-900 dark:text-white text-base leading-tight truncate">{userName}</div>

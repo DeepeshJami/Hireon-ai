@@ -2,7 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 
 /**
- * Hireon AI · Privacy Policy (Stable «Apple‑clean» Edition)
+ * Hireon AI · Privacy Policy (Stable «Apple‑clean» Edition)
  * ---------------------------------------------------------
  * ‑ Zero runtime dependencies beyond React & react‑helmet
  * ‑ Minimal, airy layout with TailwindCSS utility classes
@@ -14,19 +14,19 @@ import { Helmet } from 'react-helmet';
 const SectionHeading = ({ id, children }) => (
   <h2
     id={id}
-    className="scroll-mt-24 pt-10 pb-4 text-2xl md:text-3xl font-semibold tracking-tight"
+    className="scroll-mt-24 pt-8 sm:pt-10 pb-3 sm:pb-4 text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight"
   >
     {children}
   </h2>
 );
 
 const SimpleTable = ({ head, rows }) => (
-  <div className="overflow-x-auto rounded-xl ring-1 ring-border/20 shadow-sm my-6 text-sm">
+  <div className="overflow-x-auto rounded-xl ring-1 ring-border/20 shadow-sm my-4 sm:my-6 text-xs sm:text-sm">
     <table className="w-full border-collapse text-left">
       <thead className="bg-muted/30">
         <tr className="divide-x divide-border/20">
           {head.map((h) => (
-            <th key={h} className="px-4 py-3 font-medium">
+            <th key={h} className="px-2 sm:px-4 py-2 sm:py-3 font-medium">
               {h}
             </th>
           ))}
@@ -36,7 +36,7 @@ const SimpleTable = ({ head, rows }) => (
         {rows.map((r, i) => (
           <tr key={i} className={i % 2 === 0 ? 'bg-muted/10' : ''}>
             {r.map((cell, j) => (
-              <td key={j} className="px-4 py-4 whitespace-pre-wrap align-top">
+              <td key={j} className="px-2 sm:px-4 py-3 sm:py-4 whitespace-pre-wrap align-top">
                 {cell}
               </td>
             ))}
@@ -54,12 +54,12 @@ const sections = [
     title: '1. Overview',
     content: (
       <p>
-        Welcome to <strong>Hireon AI</strong> ("Hireon", "we", "our", or "us"). Hireon AI is a
+        Welcome to <strong>Hireon AI</strong> ("Hireon", "we", "our", or "us"). Hireon AI is a
         privacy‑first résumé‑to‑job‑description matching service that performs instant, in‑memory
         analysis with <strong>no long‑term data storage</strong>. This Privacy Policy explains what
         information we collect, why we collect it, how we use it, and what choices you have. By
-        using Hireon AI (the "Service") you agree to the practices described below.<br />
-        <span className="block mt-3">You may use Hireon AI without creating an account. Anonymous users are assigned a temporary identifier for session management, but no personal data is required.</span>
+        using Hireon AI (the "Service") you agree to the practices described below.<br />
+        <span className="block mt-3">You may use Hireon AI without creating an account. Anonymous users are assigned a temporary identifier for session management, but no personal data is required.</span>
       </p>
     )
   },
@@ -84,13 +84,13 @@ const sections = [
               'Cached in encrypted memory during session; not persisted'
             ],
             [
-              'Device & Usage Data',
+              'Device & Usage Data',
               '• Browser type & version\n• OS & device type\n• Page views, feature clicks',
               '• Debug & secure Service\n• Aggregate analytics (no profiling)',
               'Raw logs ≤ 30 days; aggregated metrics indefinitely'
             ],
             [
-              'Cookies & Local Storage',
+              'Cookies & Local Storage',
               '• Theme (light/dark) preference\n• CSRF token',
               '• UX customization\n• Security',
               'Theme ≈ 1 year; CSRF ≈ 2 h'
@@ -234,7 +234,7 @@ const sections = [
     title: '9. Childrens Privacy',
     content: (
       <p>
-        Hireon AI is <strong>not directed to children under 16</strong>. We do not knowingly collect
+        Hireon AI is <strong>not directed to children under 16</strong>. We do not knowingly collect
         personal information from minors. If you become aware that a minor has provided us with
         personal data, please contact us for deletion.
       </p>
@@ -266,19 +266,19 @@ const sections = [
 const PrivacyPolicy = () => (
   <>
     <Helmet>
-      <title>Privacy Policy | Hireon AI</title>
+      <title>Privacy Policy | Hireon AI</title>
       <meta
         name="description"
-        content="Learn how Hireon AI collects, uses, and protects your personal information."
+        content="Learn how Hireon AI collects, uses, and protects your personal information."
       />
     </Helmet>
 
-    <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 pt-12 text-base text-foreground">
-      <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Privacy Policy</h1>
-      <p className="mt-2 text-muted-foreground text-sm">Last updated: 31 May 2025</p>
+    <main className="max-w-3xl mx-auto px-3 sm:px-4 lg:px-8 pb-16 sm:pb-24 pt-8 sm:pt-12 text-sm sm:text-base text-foreground">
+      <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">Privacy Policy</h1>
+      <p className="mt-1 sm:mt-2 text-muted-foreground text-xs sm:text-sm">Last updated: 31 May 2025</p>
 
       {sections.map(({ id, title, content }) => (
-        <section key={id} aria-labelledby={id} className="border-b border-border/10">
+        <section key={id} aria-labelledby={id} className="border-b border-border/10 last:border-0">
           <SectionHeading id={id}>{title}</SectionHeading>
           {content}
         </section>

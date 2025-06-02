@@ -200,15 +200,15 @@ const UploadPage = () => {
 
   return (
     // Main container for the page content
-    <div className="container mx-auto px-6 py-10 md:py-16">
+    <div className="container mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8 md:py-16">
       {/* Login Modal */}
       {showLoginModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl p-8 max-w-sm w-full flex flex-col items-center">
-            <h3 className="text-xl font-semibold mb-4 text-center text-foreground">Sign in to continue</h3>
-            <p className="mb-6 text-muted-foreground text-center">You need to sign in with Google to continue using Hireon AI.</p>
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl p-4 sm:p-8 max-w-sm w-full flex flex-col items-center">
+            <h3 className="text-lg sm:text-xl font-semibold mb-4 text-center text-foreground">Sign in to continue</h3>
+            <p className="mb-6 text-muted-foreground text-center text-sm">You need to sign in with Google to continue using Hireon AI.</p>
             <GoogleSignIn />
-            <button className="mt-6 text-sm text-gray-500 hover:underline" onClick={() => setShowLoginModal(false)}>Cancel</button>
+            <button className="mt-6 text-xs sm:text-sm text-gray-500 hover:underline" onClick={() => setShowLoginModal(false)}>Cancel</button>
           </div>
         </div>
       )}
@@ -220,29 +220,29 @@ const UploadPage = () => {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="text-center mb-10 md:mb-12"
+        className="text-center mb-6 sm:mb-10 md:mb-12"
       >
-        <h2 className="text-3xl md:text-4xl font-bold font-inter text-foreground mb-3 md:mb-4">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-inter text-foreground mb-2 sm:mb-3 md:mb-4">
           Let's see what's working in your resume...
         </h2>
-        <p className="text-lg md:text-xl text-muted-foreground">
+        <p className="text-base sm:text-lg md:text-xl text-muted-foreground">
           Paste your content below and let AI do the magic ✨
         </p>
       </motion.div>
 
       {/* Main Form Area */}
       <div className="max-w-5xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-6 md:gap-8 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8 mb-8">
           {/* Resume Input Section */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="space-y-4 bg-card p-6 rounded-xl shadow-lg border border-border"
+            className="space-y-4 bg-card p-4 sm:p-6 rounded-xl shadow-lg border border-border"
           >
             <div className="flex items-center gap-3 mb-3">
               <FileText className="w-6 h-6 text-primary" />
-              <h3 className="text-xl font-semibold font-inter text-foreground">
+              <h3 className="text-lg sm:text-xl font-semibold font-inter text-foreground">
                 Your Resume
               </h3>
             </div>
@@ -251,7 +251,7 @@ const UploadPage = () => {
               <div className="inline-flex rounded-full bg-muted p-1 shadow-inner" role="tablist" aria-label="Resume input method">
                 <button
                   type="button"
-                  className={`px-5 py-2 rounded-full font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 ${resumeInputMethod === 'upload' ? 'bg-background text-primary shadow' : 'text-muted-foreground'}`}
+                  className={`px-4 sm:px-5 py-2 rounded-full font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 ${resumeInputMethod === 'upload' ? 'bg-background text-primary shadow' : 'text-muted-foreground'}`}
                   aria-selected={resumeInputMethod === 'upload'}
                   aria-controls="upload-panel"
                   onClick={() => handleInputMethodChange('upload')}
@@ -260,7 +260,7 @@ const UploadPage = () => {
                 </button>
                 <button
                   type="button"
-                  className={`px-5 py-2 rounded-full font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 ${resumeInputMethod === 'text' ? 'bg-background text-primary shadow' : 'text-muted-foreground'}`}
+                  className={`px-4 sm:px-5 py-2 rounded-full font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 ${resumeInputMethod === 'text' ? 'bg-background text-primary shadow' : 'text-muted-foreground'}`}
                   aria-selected={resumeInputMethod === 'text'}
                   aria-controls="text-panel"
                   onClick={() => handleInputMethodChange('text')}
@@ -271,14 +271,14 @@ const UploadPage = () => {
             </div>
             {/* Conflict message */}
             {conflict && (
-              <div className="mb-2 p-2 rounded bg-red-100 text-red-700 text-center font-medium">
+              <div className="mb-2 p-2 rounded bg-red-100 text-red-700 text-center font-medium text-xs sm:text-sm">
                 Please use only one method to provide your content — either paste text or upload a PDF.
               </div>
             )}
             {/* Show only the selected input method */}
             {resumeInputMethod === 'upload' && !conflict && (
               <div id="upload-panel" role="tabpanel" aria-labelledby="upload-tab">
-                <div className="mb-2 text-sm text-muted-foreground">Upload your resume as a PDF file.</div>
+                <div className="mb-2 text-xs sm:text-sm text-muted-foreground">Upload your resume as a PDF file.</div>
             <motion.div
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
@@ -288,7 +288,7 @@ const UploadPage = () => {
                     resumeFileInputRef.current?.click();
                   }}
               whileHover={{ scale: 1.02 }}
-              className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-all duration-300 cursor-pointer ${
+              className={`relative border-2 border-dashed rounded-lg p-4 sm:p-6 text-center transition-all duration-300 cursor-pointer ${
                 isDragOver 
                   ? 'border-primary bg-primary/10' 
                   : 'border-input hover:border-primary/70'
@@ -296,7 +296,7 @@ const UploadPage = () => {
                   data-testid="drop-zone"
             >
               <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-              <p className="text-sm text-muted-foreground font-inter">
+              <p className="text-xs sm:text-sm text-muted-foreground font-inter">
                     Drag & drop your PDF resume here or click to browse
               </p>
               {fileName && <p className="text-xs text-primary mt-1">Selected: {fileName}</p>}
@@ -320,10 +320,10 @@ const UploadPage = () => {
                   )}
             </motion.div>
                 {resumeError && (
-                  <div className="text-red-600 text-sm mt-1" data-testid="resume-error">{resumeError}</div>
+                  <div className="text-red-600 text-xs sm:text-sm mt-1" data-testid="resume-error">{resumeError}</div>
                 )}
                 {fileTypeError && (
-                  <div className="text-red-600 text-sm mt-1" data-testid="file-type-error">{fileTypeError}</div>
+                  <div className="text-red-600 text-xs sm:text-sm mt-1" data-testid="file-type-error">{fileTypeError}</div>
                 )}
                 {infoMessage && (
                   <div className="mt-2 text-xs text-blue-600 text-center">{infoMessage}</div>
@@ -332,14 +332,14 @@ const UploadPage = () => {
             )}
             {resumeInputMethod === 'text' && !conflict && (
               <div id="text-panel" role="tabpanel" aria-labelledby="text-tab">
-                <div className="mb-2 text-sm text-muted-foreground">Paste your resume content below.</div>
+                <div className="mb-2 text-xs sm:text-sm text-muted-foreground">Paste your resume content below.</div>
                 <div className="relative">
                   <textarea
                     ref={textAreaRef}
                     value={resume}
                     onChange={(e) => setResume(e.target.value)}
                     placeholder="Paste your resume content here..."
-                    className="w-full h-64 md:h-80 p-4 rounded-lg border-2 border-input focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all duration-300 resize-none bg-background text-foreground placeholder:text-muted-foreground font-inter"
+                    className="w-full h-48 sm:h-64 md:h-80 p-3 sm:p-4 rounded-lg border-2 border-input focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all duration-300 resize-none bg-background text-foreground placeholder:text-muted-foreground font-inter text-xs sm:text-sm"
                     onDragOver={handleTextAreaDragOver}
                     onDrop={handleTextAreaDrop}
                     onFocus={handleTextAreaFocus}
@@ -360,7 +360,7 @@ const UploadPage = () => {
                   </button>
                 )}
                 {resumeError && (
-                  <div className="text-red-600 text-sm mt-1" data-testid="resume-error">{resumeError}</div>
+                  <div className="text-red-600 text-xs sm:text-sm mt-1" data-testid="resume-error">{resumeError}</div>
                 )}
                 {infoMessage && (
                   <div className="mt-2 text-xs text-blue-600 text-center">{infoMessage}</div>
@@ -374,11 +374,11 @@ const UploadPage = () => {
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="space-y-4 bg-card p-6 rounded-xl shadow-lg border border-border"
+            className="space-y-4 bg-card p-4 sm:p-6 rounded-xl shadow-lg border border-border"
           >
             <div className="flex items-center gap-3 mb-3">
               <Briefcase className="w-6 h-6 text-primary" />
-              <h3 className="text-xl font-semibold font-inter text-foreground">
+              <h3 className="text-lg sm:text-xl font-semibold font-inter text-foreground">
                 Job Description
               </h3>
             </div>
@@ -387,12 +387,12 @@ const UploadPage = () => {
                 value={jobDescription}
                 onChange={(e) => setJobDescription(e.target.value)}
                 placeholder="Paste the job description or LinkedIn job URL here..."
-                className="w-full h-72 md:h-96 p-4 rounded-lg border-2 border-input focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all duration-300 resize-none bg-background text-foreground placeholder:text-muted-foreground font-inter"
+                className="w-full h-48 sm:h-72 md:h-96 p-3 sm:p-4 rounded-lg border-2 border-input focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all duration-300 resize-none bg-background text-foreground placeholder:text-muted-foreground font-inter text-xs sm:text-sm"
                 data-testid="job-description-input"
               />
             </div>
-            <div className="bg-primary/10 rounded-md p-4 border border-primary/20">
-              <p className="text-primary text-sm font-inter">
+            <div className="bg-primary/10 rounded-md p-3 sm:p-4 border border-primary/20">
+              <p className="text-primary text-xs sm:text-sm font-inter">
                 💡 <strong>Pro tip:</strong> Include requirements, qualifications, and desired skills for the best analysis.
               </p>
             </div>
@@ -404,12 +404,12 @@ const UploadPage = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
-          className="text-center mt-8 md:mt-10"
+          className="text-center mt-6 sm:mt-8 md:mt-10"
         >
           <button
             onClick={handleSubmit}
             disabled={(!resumeFile && resume.trim() === '') || !jobDescription.trim() || isLoading}
-            className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-primary to-indigo-600 hover:from-primary/90 hover:to-indigo-600/90 text-primary-foreground px-10 py-4 md:px-12 md:py-5 rounded-xl text-lg md:text-xl font-semibold font-inter shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:shadow-none"
+            className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-primary to-indigo-600 hover:from-primary/90 hover:to-indigo-600/90 text-primary-foreground px-6 py-3 sm:px-10 sm:py-4 md:px-12 md:py-5 rounded-xl text-base sm:text-lg md:text-xl font-semibold font-inter shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:shadow-none w-full max-w-xs"
             data-testid="analyze-button"
           >
             {isLoading ? (
@@ -437,7 +437,7 @@ const UploadPage = () => {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-600"
+            className="mt-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-600 text-xs sm:text-sm"
             data-testid="error-message"
           >
             {error}
