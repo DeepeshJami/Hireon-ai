@@ -7,12 +7,6 @@ from app.services.pdf_parser import parse_pdf_to_text
 from app.services.openai_analyzer import get_ai_analysis, AIResponseSchema
 from app.utils.resume_analyzer_utils import calculate_word_count, calculate_readability_score
 
-# --- Google Auth imports ---
-from google.oauth2 import id_token
-from google.auth.transport import requests as grequests
-GOOGLE_CLIENT_ID = "531200600262-iofhv33pktoo6froa80rrnj4gm1m0722.apps.googleusercontent.com"  # TODO: Replace with your real client ID
-# --------------------------
-
 logger = logging.getLogger(__name__) # Get a logger for this module
 
 router = APIRouter()
@@ -29,17 +23,6 @@ class FullAnalysisResponse(BaseModel):
     missing_keywords: List[str] = Field(default_factory=list, max_items=10)
     suggestions: List[str] = Field(default_factory=list, max_items=7)
     resume_stats: ResumeStats
-
-async def optional_google_user(authorization: str = Header(None)) -> str | None:
-    if not authorization or not authorization.startswith("Bearer "):
-        return None
-    token = authorization.split(" ", 1)[1]
-    try:
-        info = id_token.verify_oauth2_token(token, grequests.Request(), GOOGLE_CLIENT_ID)
-        return info["sub"]  # This is the unique Google user ID
-    except Exception as e:
-        logger.warning(f"Google token verification failed: {e}")
-        return None
 
 @router.post("/analyze", 
              response_model=FullAnalysisResponse,
@@ -103,5 +86,5 @@ async def analyze_resume_fully(
     ) 
 
 @router.get("/quota")
-async def get_quota(request: Request, google_uid: str | None = Depends(optional_google_user)):
+async def get_quota(request: Request):
     return {"used": 0, "limit": None, "free": True} 

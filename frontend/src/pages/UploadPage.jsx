@@ -6,7 +6,6 @@ import LoadingModal from '../components/feedback/LoadingModal';
 import { useAppContext } from '../context/AppContext';
 import { analyzeResumeWithAPI } from '../services/api'; // Import the API service
 import AnalysisResult from '../components/results/AnalysisResult'; // Import AnalysisResult
-import { GoogleSignIn } from '../components/GoogleSignInUploadPage';
 
 // Mock onEvaluate function for now - this will be replaced by API call logic
 // const mockOnEvaluate = (resume, jobDescription) => {
@@ -44,7 +43,6 @@ const UploadPage = () => {
   const textAreaRef = useRef(null);
   const resumeFileInputRef = useRef(null);
   const [fileInputKey, setFileInputKey] = useState(Date.now());
-  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const handleSubmit = async () => {
     setError(null); // Clear previous errors
@@ -201,17 +199,6 @@ const UploadPage = () => {
   return (
     // Main container for the page content
     <div className="container mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8 md:py-16">
-      {/* Login Modal */}
-      {showLoginModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl p-4 sm:p-8 max-w-sm w-full flex flex-col items-center">
-            <h3 className="text-lg sm:text-xl font-semibold mb-4 text-center text-foreground">Sign in to continue</h3>
-            <p className="mb-6 text-muted-foreground text-center text-sm">You need to sign in with Google to continue using Hireon AI.</p>
-            <GoogleSignIn />
-            <button className="mt-6 text-xs sm:text-sm text-gray-500 hover:underline" onClick={() => setShowLoginModal(false)}>Cancel</button>
-          </div>
-        </div>
-      )}
       {/* Loading Modal is rendered conditionally based on isLoading state */}
       <LoadingModal isVisible={isLoading} onComplete={handleLoadingComplete} />
 

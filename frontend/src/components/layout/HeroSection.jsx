@@ -2,7 +2,6 @@ import React from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
 import { ArrowRight, FileText, Sparkles } from 'lucide-react';
-import { GoogleSignIn } from '../GoogleSignIn';
 
 // Converted from HeroProps interface for JSX
 const HeroSection = ({ onCTAClick }) => {
@@ -48,9 +47,6 @@ const HeroSection = ({ onCTAClick }) => {
                 <span>Try It Free</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
-              <div className="mt-2 sm:mt-6">
-                <GoogleSignIn />
-              </div>
             </motion.div>
 
             <motion.div

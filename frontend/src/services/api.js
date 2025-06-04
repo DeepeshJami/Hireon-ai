@@ -11,14 +11,9 @@ const apiClient = axios.create({
   withCredentials: true, // Enable sending cookies if needed
 });
 
-// Add interceptor to include Google ID token if present
-apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem('g_id_token');
-  if (token) {
-    config.headers['Authorization'] = `Bearer ${token}`;
-  }
-  return config;
-});
+// Removed Google ID token interceptor
+
+export default apiClient;
 
 /**
  * Calls the backend API to analyze the resume and job description.
