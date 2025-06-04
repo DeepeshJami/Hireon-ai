@@ -27,10 +27,10 @@ app = FastAPI(
 origins = [
     "http://localhost:5173",                      # local dev
     "https://hireon-ai.vercel.app",               # prod frontend
-    "https://*.vercel.app"
-    "https://hireon-ai.vercel.app"
-    "https://hireonai.com"
-    "https://www.hireonai.com",                       # all preview deploys
+    "https://*.vercel.app",                       # all preview deploys
+    "https://hireon-ai.vercel.app",
+    "https://hireonai.com",
+    "https://www.hireonai.com",
 ]
 
 # Add CORS middleware

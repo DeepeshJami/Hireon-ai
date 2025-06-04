@@ -56,22 +56,22 @@ A single JSON object exactly:
 1 Compute MATCH_SCORE (0-100) using the rubric below.  
 2 Translate score → MATCH_RATING:  
    90-100 Excellent • 75-89 Good • 60-74 Fair • <60 Poor  
-3 List up to 10 high-leverage JD keywords absent OR only weakly mentioned (≤1 occurrence outside a “Skills/Tech” section).  
+3 List up to 10 high-leverage JD keywords absent OR only weakly mentioned (≤1 occurrence outside a "Skills/Tech" section).  
 4 Generate 4-7 laser-focused SUGGESTIONS (≤160 chars, each starts with a verb) ranked by ROI to the candidate.  
-   ✗ Never suggest faking experience or “improve formatting”.  
+   ✗ Never suggest faking experience or "improve formatting".  
    ✗ No layout/formatting advice.
 
 ════════ BEST-IN-CLASS SCORING RUBRIC (sum = 100) ═════════
 1. **Core Technical Skills**     20 pts  
-   • Skills tagged “Required” or in JD title.  
+   • Skills tagged "Required" or in JD title.  
    • Award = 20 × (matched_core / total_core).
 
 2. **Secondary / Nice-to-Have Skills** 10 pts  
-   • “Preferred/Nice” in JD.  
+   • "Preferred/Nice" in JD.  
    • Award = 10 × (matched_secondary / total_secondary).
 
 3. **Skill Depth & Emphasis**   10 pts  
-   • +1 if skill appears in “Skills/Tech Stack” heading.  
+   • +1 if skill appears in "Skills/Tech Stack" heading.  
    • +0.5 if inside Experience bullet.  
    • Award = min(10, Σdepth).
 
@@ -164,26 +164,4 @@ Begin processing now."""
         logger.error(f"An unexpected error occurred with OpenAI service: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"An unexpected error occurred with OpenAI service: {str(e)}")
 
-# Example usage (for testing purposes, can be removed later)
-async def main_test():
-    # A very short resume and JD for quick testing
-    resume = "John Doe. Python developer. Worked on web apps."
-    jd = "Seeking Python developer for backend systems. Experience with FastAPI and databases required."
-    print(f"Test Resume: {resume}")
-    print(f"Test JD: {jd}")
-    try:
-        analysis = await get_ai_analysis(resume, jd)
-        print("\nAnalysis Result (JSON):")
-        print(analysis.model_dump_json(indent=2))
-    except HTTPException as e:
-        print(f"\nError: {e.status_code} - {e.detail}")
-
-if __name__ == "__main__":
-    import asyncio
-    # Ensure you have OPENAI_API_KEY set in your .env file for this test to run against the API
-    if not settings.OPENAI_API_KEY or settings.OPENAI_API_KEY == "your_api_key_here":
-        print("CRITICAL: OPENAI_API_KEY is not set in .env or is still the placeholder.")
-        print("Please set it to run this test against the actual OpenAI API.")
-    else:
-        print(f"Found OpenAI API Key: {settings.OPENAI_API_KEY[:5]}...{settings.OPENAI_API_KEY[-4:]}")
-        asyncio.run(main_test()) 
+# End of production code. Removed __main__ test block for deployment. 
