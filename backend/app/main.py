@@ -36,7 +36,7 @@ origins = [
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Frontend URL
+    allow_origins=origins,  # Frontend URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
