@@ -29,7 +29,8 @@ origins = [
     "https://hireon-ai.vercel.app",               # prod frontend
     "https://*.vercel.app"
     "https://hireon-ai.vercel.app"
-    "https://hireonai.com",                       # all preview deploys
+    "https://hireonai.com"
+    "https://www.hireonai.com",                       # all preview deploys
 ]
 
 # Add CORS middleware
