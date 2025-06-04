@@ -88,3 +88,17 @@ async def analyze_resume_fully(
 @router.get("/quota")
 async def get_quota(request: Request):
     return {"used": 0, "limit": None, "free": True} 
+
+# ── New stub for optional_google_user ──────────────────────────────────────────
+async def optional_google_user(authorization: str = Header(None)) -> str:
+    """
+    A placeholder dependency that "extracts" a Google UID from an Authorization header.
+    Right now it always returns a fixed string. In production, replace this with
+    real token parsing/verification logic (e.g. verify JWT via Google).
+    """
+    if not authorization:
+        return "anonymous"
+    if authorization.startswith("Bearer "):
+        token = authorization.split(" ", 1)[1]
+        return token
+    raise HTTPException(status_code=401, detail="Invalid authorization scheme") 
